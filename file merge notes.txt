@@ -1,0 +1,30 @@
+Choose Machine
+	set root.machine to choice
+
+Choose Offset Template
+	set external file name to call for substitution
+	of first occurance of offset pattern
+	(need to figure out how to handle removing offset
+	pattern afteer the first occurance if none is choosen)
+
+Add File
+	-reads external file for initial folder-
+	creates root.files[] containing files selected. 
+	(need to use for file count to populate Pallet Change
+	combobox)
+
+Merge Files
+	opens saveas dialog. creates root.new_file.
+
+Pallet Change
+	pick file to apply pallet change after. change regex
+	pattern accordingly.
+
+Process Merged Files
+	offset template from combobox, external standard offset
+	pattern, external custom offset pattern, regex pattern
+	for O# replacement and between file pattern
+	
+
+
+	
