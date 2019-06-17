@@ -196,17 +196,27 @@ class File_Merge(tk.Tk):
 
     def process_file(self, event):
 
-        #  Read in the file
+        #  Read in the merged file
         with open(self.new_file, 'r') as filein:
             filedata = filein.read()
 
+        #  Get 'as  posted' pattern
         with open('Offset_Templates/workshift_offset_pattern.txt',
                   'r') as filepat:
             work_shift_pattern = filepat.read()
 
+        #  Get machine specific custom pattern
         custom_template = self.choose_offset_template_combo.get()
         if custom_template == 'Custom':
-            custom_pattern = ('Offset_Templates\\{}_Template.{}').format(self.machine, 'txt')
+            custom_pattern = (('Offset_Templates\\{}_Template.{}').format
+                              (self.machine, 'txt'))
+            with open(custom_pattern, 'r') as offpat:
+                self.custom_offset_pattern = offpat.read()
+
+        #  When no custom pattern specified
+        elif custom_template == 'None':
+            custom_pattern = (('Offset_Templates\\{}_Template.{}').format
+                              (self.machine, 'txt'))
             with open(custom_pattern, 'r') as offpat:
                 self.custom_offset_pattern = offpat.read()
 
@@ -226,6 +236,8 @@ class File_Merge(tk.Tk):
             index += 1
             ln += 1000
         filedata = filedata.replace('N1000', 'O1', 1)
+
+        #  Replace pattern between files
         if self.machine == 'MH06':
             pattern_mh06 = re.compile(r'M99\n%\n%\n')
             filedata = re.sub(pattern_mh06, '', filedata)
@@ -233,14 +245,14 @@ class File_Merge(tk.Tk):
             pattern_mh13 = re.compile(r'T60M6\nM98P9901\nM30\n%\n%')
             filedata = re.sub(pattern_mh13, 'M1', filedata)
 
-        pattern3 = re.compile(r'T\d+')
-        match3 = pattern3.findall(filedata)
-        rep_t60 = []
-        for i, j in enumerate(match3):
-            if j == 'T60':
-                if (i + 1) < len(match3):
-                    rep_t60.append(match3[(i + 1)])
-                    print(rep_t60)
+            pattern3 = re.compile(r'T\d+')
+            match3 = pattern3.findall(filedata)
+            rep_t60 = []
+            for i, j in enumerate(match3):
+                if j == 'T60':
+                    if (i + 1) < len(match3):
+                        rep_t60.append(match3[(i + 1)])
+                        print(rep_t60)
     #     rep_t60 = [w.replace('M6', '') for w in rep_t60]
         index2 = 0
         while index2 < (len(rep_t60)):
